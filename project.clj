@@ -9,6 +9,8 @@
                  [com.taoensso/timbre "4.7.4"]
                  [re-frame "0.8.0"]
                  [cljsjs/highcharts "4.2.6-1"]
+                 [cider/cider-nrepl "0.14.0-SNAPSHOT"]
+                 [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
                  [cljsjs/handsontable "0.26.1-0"]]
 
 
@@ -20,7 +22,12 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel
+  {:http-server-root "public"
+   :nrepl-port 7002
+   :css-dirs ["resources/public/css"]
+   :nrepl-middleware
+   [cemerick.piggieback/wrap-cljs-repl cider.nrepl/cider-middleware]}
 
   :profiles
   {:dev
