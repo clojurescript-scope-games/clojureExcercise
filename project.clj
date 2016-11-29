@@ -33,7 +33,7 @@
   {:dev
    {:dependencies []
 
-    :plugins      [[lein-figwheel "0.5.4-3"]]}}
+    :plugins      [[lein-figwheel "0.5.8"]]}}
 
 
   :cljsbuild
