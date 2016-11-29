@@ -24,6 +24,7 @@
 
   :figwheel
   {:http-server-root "public"
+   :server-port 3889
    :nrepl-port 7008
    :css-dirs ["resources/public/css"]
    :nrepl-middleware
