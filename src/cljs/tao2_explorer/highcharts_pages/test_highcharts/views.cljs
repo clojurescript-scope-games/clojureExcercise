@@ -59,7 +59,7 @@
 (defn gen-chart-config-handson
   [tableconfig]
   (let [ret (reagent/atom {
-                           :title    {:text "Historic World Population by Region"}
+                           :title    {:text "Steve Historic World Population by Region"}
                            :subtitle {:text "Source: Wikipedia.org"}
                            :xAxis    {:categories ["Africa" "America" "Asia" "Europe" "Oceania"]
                                       :title      {:text nil}}
@@ -82,8 +82,7 @@
           data2 (assoc {} :name (str (first (get tabledata 2))) :data (vec (rest (get tabledata 2))))
           data3 (assoc {} :name (str (first (get tabledata 3))) :data (vec (rest (get tabledata 3))))
           mydata (conj [] data1 data2 data3)]
-      ;(println data1)
-      ;(println data2)
+      ;; (prn data1) ;;=> {:name "2008", :data [321 32 345 352]}
       (swap! ret assoc-in [:xAxis :categories] categories)
       (swap! ret assoc-in [:series] mydata))
     ret))
@@ -136,7 +135,7 @@
        [:div.row {:style {:margin-bottom "10px"}}
         [:div.col-xs-6
          [rui/text-field {:name      "highchart-name"
-                          :hint-text "Highchart Name"
+                          :hint-text "Steve Highchart Name"
                           :on-change #(dispatch [:test-highcharts/set-chartname
                                                  (.-value (.-target %))])}]]]
        [:div.row
