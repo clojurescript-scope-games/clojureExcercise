@@ -56,37 +56,37 @@
 ;  []
 ;  println "hello")
 
-(defn gen-chart-config-handson
-  [tableconfig]
-  (let [ret (reagent/atom {
-                           :title    {:text "Steve Historic World Population by Region"}
-                           :subtitle {:text "Source: Wikipedia.org"}
-                           :xAxis    {:categories ["Africa" "America" "Asia" "Europe" "Oceania"]
-                                      :title      {:text nil}}
-                           :yAxis    {:min       0
-                                      :title     {:text  "Population (millions)"
-                                                  :align "high"}
-                                      :labels    {:overflow "justify"}
-                                      :plotLines [{
-                                                   :value 0
-                                                   :width 1}]}
-                           :tooltip  {:valueSuffix " millions"}
-                           :legend   {:layout        "vertical"
-                                      :align         "left"
-                                      :verticalAlign "middle"
-                                      :shadow        false}
-                           :credits  {:enabled false}})]
-    (let [tabledata (:data tableconfig)
-          categories (vec (rest (get tabledata 0)))
-          data1 (assoc {} :name (str (first (get tabledata 1))) :data (vec (rest (get tabledata 1))))
-          data2 (assoc {} :name (str (first (get tabledata 2))) :data (vec (rest (get tabledata 2))))
-          data3 (assoc {} :name (str (first (get tabledata 3))) :data (vec (rest (get tabledata 3))))
-          mydata (conj [] data1 data2 data3)]
-      ;; (prn data1) ;;=> {:name "2008", :data [321 32 345 352]}
-      (swap! ret assoc-in [:xAxis :categories] categories)
-      (swap! ret assoc-in [:series] mydata))
-    ret))
 
+(defonce high-ret-data
+  (reagent/atom
+   { :title    {:text ""}
+    :subtitle {:text ""} ;; :chart {:type "area"}
+    :xAxis    {:categories
+               ["Africa" "America" "Asia" "Europe" "Oceania"]
+               :title      {:text nil}}
+    :yAxis    {:min       0
+               :title     {:text  "金额 (元)"
+                           :align "high"}
+               :labels    {:overflow "justify"}
+               :plotLines [{
+                            :value 0
+                            :width 1}]}
+    :tooltip  {:valueSuffix " 元"}
+    :legend   {:layout        "vertical"
+               :align         "left"
+               :verticalAlign "middle"
+               :shadow        false}
+    :credits  {:enabled false}}) )
+
+(defn gen-chart-config-handson [tableconfig]
+  (let [tabledata (:data tableconfig)
+        categories (vec (rest (get tabledata 0)))
+        data1 (assoc {} :name (str (first (get tabledata 1))) :data (vec (rest (get tabledata 1))))
+        data2 (assoc {} :name (str (first (get tabledata 2))) :data (vec (rest (get tabledata 2))))
+        mydata (conj [] data1 data2)]
+    (swap! high-ret-data assoc-in [:xAxis :categories] categories)
+    (swap! high-ret-data assoc-in [:series] mydata))
+  high-ret-data)
 
 (defn sampleTable-render []
   [:div {:style {:min-width "310px" :max-width "800px" :margin "0 auto"}}])
@@ -95,15 +95,11 @@
   (let [[_ tableconfig] (reagent/argv this)
         tableconfigext (assoc-in tableconfig [:afterChange] #(dispatch [:test-highcharts/set-tablevalue %]))]
     (do
-      ;(println tableconfig)
-      ;(.log js/console "table did mount!!!\n")
       (js/Handsontable (reagent/dom-node this) (clj->js tableconfigext)))))
 
 (defn sampleTable [tableconfig]
   (reagent/create-class {:reagent-render      sampleTable-render
                          :component-did-mount sampleTable-did-mount}))
-
-
 (defn sampleHighchart-render []
   [:div {:style {:min-width "310px" :max-width "800px" :margin "0 auto"}}])
 
@@ -116,11 +112,9 @@
   (let [[_ tableconfig] (reagent/argv this)
         my-chart-config (gen-chart-config-handson tableconfig)]
     (do
-      ;(.log js/console "highchart did update")
-      ;(println @my-chart-config)
-      ;(println (get-in @my-chart-config [:series]))
       (js/Highcharts.Chart. (reagent/dom-node this) (clj->js @my-chart-config)))))
 
+;; 如果你不知道怎么做时那就快速lambda化
 (defn sampleHighchart [tableconfig]
   (reagent/create-class {:reagent-render      sampleHighchart-render
                          :component-did-mount sampleHighchart-did-mount
